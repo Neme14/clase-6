@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizarra Digital - Colegio Montano</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        montanoAzul: '#1269A8',
+                        montanoAmarillo: '#F7D615',
+                        montanoVerdeGris: '#54887D',
+                        montanoAzulClaro: '#88B5C7',
+                        montanoVerdeOliva: '#A6B046',
+                        montanoFondo: '#F2F5E9'
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-btn.active {
+            background-color: #1269A8;
+            color: #ffffff;
+            border-bottom: 4px solid #F7D615;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 500px;
+        }
+    </style>
+</head>
+<body class="bg-montanoFondo text-gray-800 font-sans min-h-screen flex flex-col justify-between">
+
+    <header class="bg-montanoAzul text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-4">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyEop0yf6lZ7Jk9MILZxF1rBj4Oqs5esyhIQ&s" 
+                     alt="Logo Colegio Montano" 
+                     class="h-14 bg-white p-1 rounded-lg shadow-sm"
+                     onerror="this.onerror=null; this.src='https://placehold.co/100x100/1269A8/FFFFFF?text=Montano'">
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wide text-white">COLEGIO MONTANO</h1>
+                    <p class="text-xs md:text-sm text-montanoAmarillo font-semibold">Pizarra Digital Interactiva - Plan Diario</p>
+                </div>
+            </div>
+
+            <!-- Botón de Pantalla Completa -->
+            <button onclick="toggleFullscreen()" class="bg-montanoAmarillo hover:bg-yellow-400 text-montanoAzul font-bold px-4 py-2 rounded-lg transition duration-200 shadow flex items-center gap-2">
+                <i class="fas border-2 p-1 rounded border-montanoAzul fa-expand"></i>
+                <span class="hidden md:inline">Pantalla Completa</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 md:p-6 flex-grow w-full">
+        <!-- Banner de Encabezado de Sesión -->
+        <div class="bg-white rounded-xl p-5 shadow-md border-l-8 border-montanoAmarillo mb-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm border-b pb-4 mb-4">
+                <div><span class="font-bold text-montanoAzul">Curso:</span> Formación Musical</div>
+                <div><span class="font-bold text-montanoAzul">Grado:</span> Primero Primaria</div>
+                <div><span class="font-bold text-montanoAzul">Unidad:</span> Primera Unidad</div>
+                <div><span class="font-bold text-montanoAzul">Fecha:</span> Febrero 2027</div>
+                <div><span class="font-bold text-montanoAzul">Docente:</span> Nemecio Cutzán</div>
+                <div><span class="font-bold text-montanoAzul">Plan N°:</span> 01</div>
+                <div class="col-span-2"><span class="font-bold text-montanoAzul">Tema:</span> Ensayo de la 1.ª Frase de "El Danubio Azul"</div>
+            </div>
+
+            <!-- Marco Institucional / CNB / Hábitos Montano -->
+            <div class="grid md:grid-cols-3 gap-4 text-xs md:text-sm bg-montanoFondo p-4 rounded-lg">
+                <div class="border-l-4 border-montanoVerdeGris pl-3">
+                    <h3 class="font-bold text-montanoAzul uppercase">Competencia y Logro (CNB)</h3>
+                    <p><strong>Competencia:</strong> Ejecuta patrones rítmicos y melódicos sencillos utilizando su voz o instrumentos musicales básicos.</p>
+                    <p class="mt-1"><strong>Logro:</strong> Interpreta de forma individual y colectiva la primera frase de "El Danubio Azul" con afinación y ritmo adecuado.</p>
+                </div>
+                <div class="border-l-4 border-montanoAzulClaro pl-3">
+                    <h3 class="font-bold text-montanoAzul uppercase">Hábitos Montano</h3>
+                    <p class="flex items-center gap-1"><i class="fas fa-check text-montanoVerdeOliva"></i> <strong>Comenzar con un fin en mente:</strong> Visualizar el sonido del ensamble.</p>
+                    <p class="flex items-center gap-1"><i class="fas fa-check text-montanoVerdeOliva"></i> <strong>Sinergizar:</strong> Unir timbres e intensidad en trabajo de equipo.</p>
+                </div>
+                <div class="border-l-4 border-montanoVerdeOliva pl-3">
+                    <h3 class="font-bold text-montanoAzul uppercase">Recursos</h3>
+                    <p>Xilófonos/Flautas/Teclados, Pizarra digital, Guía gráfica de notas, Metrónomo interactivo / Teclado sintetizador interno.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación por Pestañas -->
+        <div class="flex flex-wrap gap-2 mb-4 border-b border-gray-300">
+            <button onclick="switchTab('tab1')" id="btn-tab1" class="tab-btn active px-4 py-3 font-bold rounded-t-lg transition flex items-center gap-2 bg-white text-gray-700 hover:text-montanoAzul">
+                <i class="fas fa-lightbulb text-yellow-500"></i> I) Introducción Motivante (5 min)
+            </button>
+            <button onclick="switchTab('tab2')" id="btn-tab2" class="tab-btn px-4 py-3 font-bold rounded-t-lg transition flex items-center gap-2 bg-white text-gray-700 hover:text-montanoAzul">
+                <i class="fas fa-user-music text-blue-500"></i> II) Trabajo Individual (20 min)
+            </button>
+            <button onclick="switchTab('tab3')" id="btn-tab3" class="tab-btn px-4 py-3 font-bold rounded-t-lg transition flex items-center gap-2 bg-white text-gray-700 hover:text-montanoAzul">
+                <i class="fas fa-users text-green-500"></i> III) Trabajo Cooperativo (30 min)
+            </button>
+            <button onclick="switchTab('tab4')" id="btn-tab4" class="tab-btn px-4 py-3 font-bold rounded-t-lg transition flex items-center gap-2 bg-white text-gray-700 hover:text-montanoAzul">
+                <i class="fas fa-award text-purple-500"></i> IV) Plenaria y Evaluación (15 min)
+            </button>
+        </div>
+
+        <!-- CONTENIDO PESTAÑA I -->
+        <div id="tab1" class="tab-content bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h2 class="text-xl font-bold text-montanoAzul mb-3 flex items-center gap-2">
+                <i class="fas fa-drum text-montanoAmarillo"></i> Pestaña I: Introducción Motivante (~5 minutos)
+            </h2>
+            <p class="mb-4 text-gray-700"><strong>Recreo Cerebral y Calentamiento:</strong> "El Baile de los Ríos". Los estudiantes imitan el movimiento del agua suave al ritmo de un vals instrumental 3/4.</p>
+
+            <div class="bg-montanoFondo p-4 rounded-lg border border-montanoAzulClaro mb-4">
+                <h3 class="font-bold text-montanoAzul mb-2"><i class="fas fa-question-circle"></i> Pregunta Exploratoria:</h3>
+                <p class="italic text-gray-700">"¿Cómo suena un río cuando fluye suavemente? ¿Es rápido o lento? Hoy escucharemos una melodía famosa llamada 'El Danubio Azul'."</p>
+            </div>
+
+            <!-- Mini reproductor / Simulador auditivo inicial -->
+            <div class="p-4 bg-gray-50 rounded-lg border flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <span class="font-bold text-gray-800">Escucha la melodía completa de la 1.ª Frase:</span>
+                    <p class="text-xs text-gray-500">Cortesía de sintetizador Web Audio Tone.js</p>
+                </div>
+                <button onclick="playFullPhrase()" class="bg-montanoVerdeGris hover:bg-opacity-90 text-white font-bold px-6 py-3 rounded-lg flex items-center gap-2 shadow">
+                    <i class="fas fa-play-circle text-xl"></i> Escuchar Primera Frase
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTENIDO PESTAÑA II -->
+        <div id="tab2" class="tab-content hidden bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h2 class="text-xl font-bold text-montanoAzul mb-3 flex items-center gap-2">
+                <i class="fas fa-music text-montanoAmarillo"></i> Pestaña II: Trabajo Individual (20 minutos)
+            </h2>
+            <p class="mb-4 text-gray-700">Cada estudiante realiza la lectura analítica de la figura rítmica y la digitized de la primera frase de "El Danubio Azul" (Vals en 3/4).</p>
+
+            <!-- Guía Visual de Notas -->
+            <div class="bg-montanoFondo p-4 rounded-lg mb-6 border border-montanoVerdeGris">
+                <h3 class="font-bold text-montanoAzul mb-2">Esquema Rítmico y Melódico (Notas en Do Mayor)</h3>
+                <div class="flex flex-wrap gap-2 text-center text-sm font-mono justify-center my-3">
+                    <span class="bg-white border-2 border-montanoAzul px-3 py-2 rounded-lg font-bold">DO</span>
+                    <span class="bg-white border-2 border-montanoAzul px-3 py-2 rounded-lg font-bold">MI</span>
+                    <span class="bg-white border-2 border-montanoAzul px-3 py-2 rounded-lg font-bold">SOL</span>
+                    <span class="bg-white border-2 border-montanoAmarillo px-3 py-2 rounded-lg font-bold">SOL (agudo)</span>
+                    <span class="bg-white border-2 border-montanoAmarillo px-3 py-2 rounded-lg font-bold">SOL (agudo)</span>
+                    <span class="bg-white border-2 border-montanoVerdeOliva px-3 py-2 rounded-lg font-bold">MI</span>
+                    <span class="bg-white border-2 border-montanoVerdeOliva px-3 py-2 rounded-lg font-bold">MI</span>
+                </div>
+            </div>
+
+            <!-- Botones interactivos con piano / xilófono individual -->
+            <div class="mb-6">
+                <h3 class="font-bold text-montanoAzul mb-3">Simulador / Teclado Virtual de Práctica</h3>
+                <div class="flex flex-wrap gap-2 justify-center bg-gray-100 p-4 rounded-xl">
+                    <button onclick="playNote('C4')" class="bg-white hover:bg-gray-200 text-montanoAzul font-bold border-b-4 border-montanoAzul px-5 py-6 rounded-lg shadow text-lg">DO</button>
+                    <button onclick="playNote('E4')" class="bg-white hover:bg-gray-200 text-montanoAzul font-bold border-b-4 border-montanoAzul px-5 py-6 rounded-lg shadow text-lg">MI</button>
+                    <button onclick="playNote('G4')" class="bg-white hover:bg-gray-200 text-montanoAzul font-bold border-b-4 border-montanoAzul px-5 py-6 rounded-lg shadow text-lg">SOL</button>
+                    <button onclick="playNote('C5')" class="bg-montanoAmarillo hover:bg-yellow-400 text-montanoAzul font-bold border-b-4 border-yellow-600 px-5 py-6 rounded-lg shadow text-lg">DO (Agudo)</button>
+                </div>
+            </div>
+
+            <!-- Acordeón / Solución Desplegable -->
+            <div class="border rounded-lg overflow-hidden">
+                <button onclick="toggleAccordion('acc1')" class="w-full bg-montanoAzulClaro text-white p-3 font-bold text-left flex justify-between items-center">
+                    <span><i class="fas fa-eye mr-2"></i> Ver Pista de Orientación para la Digitada Visual</span>
+                    <i id="acc1-icon" class="fas fa-chevron-down"></i>
+                </button>
+                <div id="acc1" class="accordion-content bg-gray-50 p-4 border-t">
+                    <p class="text-sm text-gray-700"><strong>Guía para el estudiante:</strong> Asegúrate de tocar el primer DO suavemente, luego sube saltando una nota hacia el MI, y luego a SOL. Imagina tres escalones para llegar arriba.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO PESTAÑA III -->
+        <div id="tab3" class="tab-content hidden bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h2 class="text-xl font-bold text-montanoAzul mb-3 flex items-center gap-2">
+                <i class="fas fa-users text-montanoAmarillo"></i> Pestaña III: Trabajo Cooperativo en Equipo (30 minutos)
+            </h2>
+            <p class="mb-4 text-gray-700">Formación de ensambles de 4 integrantes. Asignación de roles aplicando el hábito <strong>"Sinergizar"</strong>.</p>
+
+            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                <div class="p-4 border rounded-lg bg-montanoFondo">
+                    <h3 class="font-bold text-montanoAzul border-b pb-2 mb-2"><i class="fas fa-user-tag"></i> Roles de Equipo (4 Alumnos)</h3>
+                    <ul class="text-sm space-y-2">
+                        <li><strong>1. Director de Pulso:</strong> Mantiene el compás de 3/4 marcando suavemente con un triingulo o maraca.</li>
+                        <li><strong>2. Líder de Notas:</strong> Confirma que todos ejecuten las notas correctas (Do - Mi - Sol).</li>
+                        <li><strong>3. Coordinador de Postura:</strong> Verifica la postura correcta del cuerpo e instrumento.</li>
+                        <li><strong>4. Portavoz:</strong> Presentará los logros del equipo durante la plenaria.</li>
+                    </ul>
+                </div>
+                <div class="p-4 border rounded-lg bg-montanoFondo">
+                    <h3 class="font-bold text-montanoAzul border-b pb-2 mb-2"><i class="fas fa-tasks"></i> Reto de Ensamble</h3>
+                    <p class="text-sm text-gray-700">Lograr ejecutar 3 veces consecutivas la primera frase sin interrupciones, coordinando la velocidad entre todos los integrantes del grupo.</p>
+                </div>
+            </div>
+
+            <!-- Juego Interactivo / Metrónomo visual -->
+            <div class="p-4 bg-gray-100 rounded-lg text-center">
+                <h3 class="font-bold text-montanoAzul mb-2">Simulador Rítmico de Acompañamiento (Vals 3/4)</h3>
+                <div class="flex justify-center items-center gap-4">
+                    <button onclick="toggleMetronome()" id="metroBtn" class="bg-montanoAzul hover:bg-blue-800 text-white font-bold px-4 py-2 rounded-lg">
+                        <i class="fas fa-clock mr-2"></i> Iniciar Metrónomo (Vals)
+                    </button>
+                    <span id="metroStatus" class="text-sm font-semibold text-gray-600">Estado: Detenido</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENIDO PESTAÑA IV -->
+        <div id="tab4" class="tab-content hidden bg-white p-6 rounded-xl shadow-md border border-gray-200">
+            <h2 class="text-xl font-bold text-montanoAzul mb-3 flex items-center gap-2">
+                <i class="fas fa-poll-h text-montanoAmarillo"></i> Pestaña IV: Plenaria y Evaluación Interactiva (15 minutos)
+            </h2>
+            <p class="mb-4 text-gray-700">Cada equipo presenta su frase musical. El docente evalúa en tiempo real utilizando la siguiente lista de cotejo.</p>
+
+            <div class="overflow-x-auto mb-6">
+                <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
+                    <thead>
+                        <tr class="bg-montanoAzul text-white text-left text-sm">
+                            <th class="p-3 border">Criterio de Evaluación</th>
+                            <th class="p-3 border text-center">Excelente (3 pts)</th>
+                            <th class="p-3 border text-center">En Proceso (2 pts)</th>
+                            <th class="p-3 border text-center">Necesita Apoyo (1 pt)</th>
+                            <th class="p-3 border text-center">Punteo Grupo</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm text-gray-700">
+                        <tr class="border-b">
+                            <td class="p-3 font-semibold border">1. Precision Melódica y Afinación</td>
+                            <td class="p-3 border text-center">Ejecuta las notas (Do, Mi, Sol) con precisión.</td>
+                            <td class="p-3 border text-center">Confunde 1 o 2 notas durante la frase.</td>
+                            <td class="p-3 border text-center">Muestra dificultad para ubicar las notas.</td>
+                            <td class="p-3 border text-center">
+                                <input type="number" min="1" max="3" value="3" class="w-12 text-center border rounded p-1 score-input" onchange="calculateTotal()">
+                            </td>
+                        </tr>
+                        <tr class="border-b bg-gray-50">
+                            <td class="p-3 font-semibold border">2. Pulso y Ritmia (3/4)</td>
+                            <td class="p-3 border text-center">Mantiene el pulso constante de vals.</td>
+                            <td class="p-3 border text-center">Acelera o frena en algunos compases.</td>
+                            <td class="p-3 border text-center">Pierde el pulso constantemente.</td>
+                            <td class="p-3 border text-center">
+                                <input type="number" min="1" max="3" value="3" class="w-12 text-center border rounded p-1 score-input" onchange="calculateTotal()">
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-3 font-semibold border">3. Trabajo Colaborativo (Sinergia)</td>
+                            <td class="p-3 border text-center">Todos participan activamente y respetan roles.</td>
+                            <td class="p-3 border text-center">Participan pero con poca coordinación.</td>
+                            <td class="p-3 border text-center">Solo un estudiante ejecuta la melodía.</td>
+                            <td class="p-3 border text-center">
+                                <input type="number" min="1" max="3" value="3" class="w-12 text-center border rounded p-1 score-input" onchange="calculateTotal()">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Calculador de Nota Final -->
+            <div class="bg-montanoFondo p-4 rounded-lg flex justify-between items-center border border-montanoVerdeGris">
+                <span class="font-bold text-montanoAzul text-lg">Punteo Total Evaluado:</span>
+                <span id="totalScore" class="text-2xl font-extrabold text-montanoAzul bg-white px-4 py-1 rounded-lg border">9 / 9 pts</span>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-montanoAzul text-white p-3 text-center text-xs mt-6">
+        <p>Colegio Montano &copy; 2027 | Modelo Formativo Centrado en Valores y Hábitos de Liderazgo</p>
+    </footer>
+
+    <!-- JS Y LÓGICA INTERACTIVA -->
+    <script>
+        // Cambios de Pestaña
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+
+        // Modo Pantalla Completa
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Error intentando activar pantalla completa: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Acordeones
+        function toggleAccordion(id) {
+            const acc = document.getElementById(id);
+            const icon = document.getElementById(id + '-icon');
+            acc.classList.toggle('open');
+            if (acc.classList.contains('open')) {
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        }
+
+        // Sintetizador con Tone.js
+        const synth = new Tone.Synth().toDestination();
+
+        function playNote(note) {
+            Tone.start();
+            synth.triggerAttackRelease(note, "8n");
+        }
+
+        function playFullPhrase() {
+            Tone.start();
+            const now = Tone.now();
+            synth.triggerAttackRelease("C4", "8n", now);
+            synth.triggerAttackRelease("E4", "8n", now + 0.4);
+            synth.triggerAttackRelease("G4", "8n", now + 0.8);
+            synth.triggerAttackRelease("C5", "4n", now + 1.2);
+            synth.triggerAttackRelease("C5", "4n", now + 1.8);
+        }
+
+        // Metrónomo en 3/4
+        let metronomeInterval = null;
+        let isMetronomeRunning = false;
+
+        function toggleMetronome() {
+            const btn = document.getElementById('metroBtn');
+            const status = document.getElementById('metroStatus');
+
+            if (!isMetronomeRunning) {
+                Tone.start();
+                let beat = 0;
+                metronomeInterval = setInterval(() => {
+                    if (beat === 0) {
+                        synth.triggerAttackRelease("C5", "16n");
+                    } else {
+                        synth.triggerAttackRelease("G4", "16n");
+                    }
+                    beat = (beat + 1) % 3;
+                }, 500); // ~120 bpm compás de 3/4
+
+                isMetronomeRunning = true;
+                btn.classList.replace('bg-montanoAzul', 'bg-red-600');
+                btn.innerHTML = '<i class="fas fa-stop mr-2"></i> Detener Metrónomo';
+                status.innerText = "Estado: En reproducción (3/4)";
+            } else {
+                clearInterval(metronomeInterval);
+                isMetronomeRunning = false;
+                btn.classList.replace('bg-red-600', 'bg-montanoAzul');
+                btn.innerHTML = '<i class="fas fa-clock mr-2"></i> Iniciar Metrónomo (Vals)';
+                status.innerText = "Estado: Detenido";
+            }
+        }
+
+        // Sumatoria de Rúbrica
+        function calculateTotal() {
+            const inputs = document.querySelectorAll('.score-input');
+            let total = 0;
+            inputs.forEach(input => {
+                let val = parseInt(input.value) || 0;
+                if(val > 3) val = 3;
+                if(val < 1) val = 1;
+                total += val;
+            });
+            document.getElementById('totalScore').innerText = `${total} / 9 pts`;
+        }
+    </script>
+</body>
+</html>
